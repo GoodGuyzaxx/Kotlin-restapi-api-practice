@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  kotlin-restfull-api:
+    container_name: "restfull-api-postgres"
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: kotlin
+      POSTGRES_USER: root
+      POSTGRES_DB: restfull-api
