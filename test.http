@@ -1,0 +1,10 @@
+POST http://localhost:8080/api/products
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id" : "AA1",
+    "name" : "Samsung S23",
+    "price" : 500000,
+    "quantity" : 10
+}
