@@ -4,11 +4,13 @@ import me.zaxx.restfullapi.entity.Product
 import me.zaxx.restfullapi.error.NotFoundException
 import me.zaxx.restfullapi.model.CreateProductRequest
 import me.zaxx.restfullapi.model.ProductResponse
+import me.zaxx.restfullapi.model.UpdateProductRequest
 import me.zaxx.restfullapi.repository.ProductRepository
 import me.zaxx.restfullapi.service.ProductService
 import me.zaxx.restfullapi.validation.ValidationUtil
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.web.bind.annotation.DeleteMapping
 import java.util.*
 
 @Service
@@ -32,11 +34,34 @@ class ProductServiceImpl(
     }
 
     override fun get(id: String): ProductResponse {
+        val product = findProductByIdOrThrowNotFound(id)
+           return convertProductResponse(product)
+    }
+
+    override fun update(id: String, updateProductRequest: UpdateProductRequest): ProductResponse {
+        validationUtil.validate(updateProductRequest)
+        val product = findProductByIdOrThrowNotFound(id)
+            product.apply {
+                name = updateProductRequest.name!!
+                price = updateProductRequest.price!!
+                quantity = updateProductRequest.quantity!!
+            }
+        productRepository.save(product)
+
+        return convertProductResponse(product)
+    }
+
+    override fun delete(id: String) {
+        val product = findProductByIdOrThrowNotFound(id)
+        productRepository.delete(product)
+    }
+
+    private fun findProductByIdOrThrowNotFound(id: String): Product{
         val product = productRepository.findByIdOrNull(id)
         if (product == null){
-            throw NotFoundException()
-        } else{
-           return convertProductResponse(product)
+            throw  NotFoundException()
+        } else {
+            return product
         }
     }
 
