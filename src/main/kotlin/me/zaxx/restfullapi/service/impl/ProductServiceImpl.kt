@@ -3,15 +3,18 @@ package me.zaxx.restfullapi.service.impl
 import me.zaxx.restfullapi.entity.Product
 import me.zaxx.restfullapi.error.NotFoundException
 import me.zaxx.restfullapi.model.CreateProductRequest
+import me.zaxx.restfullapi.model.ListProductRequest
 import me.zaxx.restfullapi.model.ProductResponse
 import me.zaxx.restfullapi.model.UpdateProductRequest
 import me.zaxx.restfullapi.repository.ProductRepository
 import me.zaxx.restfullapi.service.ProductService
 import me.zaxx.restfullapi.validation.ValidationUtil
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.DeleteMapping
 import java.util.*
+import java.util.stream.Collectors
 
 @Service
 class ProductServiceImpl(
@@ -54,6 +57,12 @@ class ProductServiceImpl(
     override fun delete(id: String) {
         val product = findProductByIdOrThrowNotFound(id)
         productRepository.delete(product)
+    }
+
+    override fun list(listProductRequest: ListProductRequest): List<ProductResponse> {
+        val page = productRepository.findAll(PageRequest.of(listProductRequest.page, listProductRequest.size))
+        val products :List<Product> = page.get().collect(Collectors.toList())
+        return products.map { convertProductResponse(it) }
     }
 
     private fun findProductByIdOrThrowNotFound(id: String): Product{
