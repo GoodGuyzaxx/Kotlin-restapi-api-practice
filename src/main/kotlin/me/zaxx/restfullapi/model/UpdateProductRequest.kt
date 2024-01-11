@@ -3,6 +3,7 @@ package me.zaxx.restfullapi.model
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import java.util.Date
 
 data class UpdateProductRequest(
 
@@ -15,5 +16,7 @@ data class UpdateProductRequest(
 
         @field:NotNull
         @field:Min(0)
-        val quantity: Int
+        val quantity: Int,
+
+        val updatedAt: Date
 )
